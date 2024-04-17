@@ -1,0 +1,6 @@
+﻿services:
+  mybooklist:
+    image: mybooklist
+    build:
+      context: .
+      dockerfile: MyBookList/Dockerfile
