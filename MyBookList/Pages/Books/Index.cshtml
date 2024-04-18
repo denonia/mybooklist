@@ -7,7 +7,7 @@
 
 <h1 class="display-4">Books</h1>
 
-<strong>@Model.BooksCount</strong> results found
+<strong>@Model.BooksCount@(Model.BooksCount == Model.PageSize ? "+" : "")</strong> results found
 
 <form>
     <div class="form-group mt-3 col-sm-4">
@@ -18,7 +18,7 @@
     <div class="form-group mt-2">
         <input type="checkbox" asp-for="HasDescription" class="form-check-input"/>
         <label asp-for="HasDescription" class="form-check-label">Has description</label>
-        
+
         <input type="checkbox" asp-for="HasCover" class="form-check-input"/>
         <label asp-for="HasCover" class="form-check-label">Has cover</label>
     </div>
@@ -43,20 +43,39 @@
     {
         <tr>
             <td>
-                @if (book.CoverId != null)
-                {
-                    <img src="https://covers.openlibrary.org/b/id/@book.CoverId-M.jpg" alt="@book.Title"/>
-                }
-                else
-                {
-                    <img src="img/cover.jpg" width="180" height="271" alt="@book.Title"/>
-                }
+                <img src="@book.ThumbnailUrl" alt="@book.Title"/>
             </td>
-            <th>@book.Title</th>
-            <td>@book.Authors</td>
+            <th>
+                <a asp-page="Details" asp-route-id="@book.Id">@book.Title</a>
+            </th>
+            <td>@book.AuthorsString</td>
             <td>@book.Description</td>
             <td>@book.Id</td>
         </tr>
     }
     </tbody>
 </table>
+
+@if (Model.PageIndex > 1)
+{
+    <a class="btn btn-primary"
+       asp-page="Index"
+       asp-route-SearchString="@Model.SearchString"
+       asp-route-HasDescription="@Model.HasDescription"
+       asp-route-HasCover="@Model.HasCover"
+       asp-route-pageIndex="@(Model.PageIndex - 1)">
+        Previous page
+    </a>
+}
+
+@if (Model.BooksCount == @Model.PageSize)
+{
+    <a class="btn btn-primary"
+       asp-page="Index"
+       asp-route-SearchString="@Model.SearchString"
+       asp-route-HasDescription="@Model.HasDescription"
+       asp-route-HasCover="@Model.HasCover"
+       asp-route-pageIndex="@(Model.PageIndex + 1)">
+        Next page
+    </a>
+}

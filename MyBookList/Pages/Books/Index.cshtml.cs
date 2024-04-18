@@ -2,29 +2,35 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MyBookList.Data;
+using MyBookList.Services;
 
 namespace MyBookList.Pages.Books;
 
 public class BookViewModel
 {
-    public string Id { get; set; }
-    public string Title { get; set; }
-    public string? Description { get; set; }
-    public int? CoverId { get; set; }
-    public IEnumerable<string> AuthorNames { get; set; }
+    public string Id { get; init; }
+    public string Title { get; init; }
+    public string? Description { get; init; }
+    public int? CoverId { get; init; }
+    public string ThumbnailUrl { get; set; }
+    public IEnumerable<string> AuthorNames { get; init; }
 
-    public string Authors => string.Join(",", AuthorNames);
+    public string AuthorsString => string.Join(",", AuthorNames);
 }
 
 public class Index : PageModel
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly ThumbnailService _thumbnailService;
 
-    public Index(ApplicationDbContext dbContext)
+    public Index(ApplicationDbContext dbContext, ThumbnailService thumbnailService)
     {
         _dbContext = dbContext;
+        _thumbnailService = thumbnailService;
     }
 
+    public int PageSize { get; } = 20;
+    
     public IEnumerable<BookViewModel> Books { get; set; } = default!;
 
     public int BooksCount => Books.Count();
@@ -32,9 +38,13 @@ public class Index : PageModel
     [BindProperty(SupportsGet = true)] public bool HasDescription { get; set; } = true;
     [BindProperty(SupportsGet = true)] public bool HasCover { get; set; } = true;
     [BindProperty(SupportsGet = true)] public string? SearchString { get; set; }
+    public int PageIndex { get; set; } = 1;
 
-    public async Task OnGetAsync()
+    public async Task OnGetAsync(int pageIndex = 1)
     {
+        if (pageIndex >= 1)
+            PageIndex = pageIndex;
+
         var books = _dbContext.Books.AsQueryable();
 
         if (!string.IsNullOrEmpty(SearchString))
@@ -46,7 +56,7 @@ public class Index : PageModel
         if (HasCover)
             books = books.Where(x => x.CoverId != null);
 
-        Books = await books.Take(20)
+        Books = await books.Skip((PageIndex - 1) * PageSize).Take(PageSize)
             .Select(x => new BookViewModel
             {
                 Id = x.Id,
@@ -56,5 +66,8 @@ public class Index : PageModel
                 AuthorNames = x.Authors.Select(a => a.Name),
             })
             .ToListAsync();
+
+        foreach (var book in Books)
+            book.ThumbnailUrl = await _thumbnailService.GetBookThumbnailUrlAsync(book.CoverId);
     }
 }

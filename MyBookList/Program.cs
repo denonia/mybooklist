@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyBookList.Data;
+using MyBookList.Services;
 
 namespace MyBookList;
 
@@ -20,6 +21,8 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddRazorPages();
+
+        builder.Services.AddTransient<ThumbnailService, ThumbnailService>();
 
         builder.Logging.AddConsole(config => config.TimestampFormat = "[dd/MM/yy HH:mm:ss:fff] ");
 
