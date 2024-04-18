@@ -30,6 +30,15 @@ public class ApplicationDbContext : IdentityDbContext
         builder.Entity<Book>()
             .HasMany<Subject>(x => x.Subjects)
             .WithMany(x => x.Books);
+        
+        builder.Entity<Book>()
+            .HasIndex(x => x.Title);
+        
+        builder.Entity<Author>()
+            .HasIndex(x => x.Name);
+        
+        builder.Entity<Subject>()
+            .HasIndex(x => x.Title);
 
         base.OnModelCreating(builder);
     }

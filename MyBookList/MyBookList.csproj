@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>aspnet-MyBookList-7E673786-4851-4593-BB24-ACE6AF37D762</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +14,12 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

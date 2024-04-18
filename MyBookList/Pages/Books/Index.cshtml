@@ -1,0 +1,62 @@
+﻿@page
+@model MyBookList.Pages.Books.Index
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h1 class="display-4">Books</h1>
+
+<strong>@Model.BooksCount</strong> results found
+
+<form>
+    <div class="form-group mt-3 col-sm-4">
+        <label asp-for="SearchString">Title</label>
+        <input type="text" asp-for="SearchString" class="form-control" placeholder="Search..."/>
+    </div>
+
+    <div class="form-group mt-2">
+        <input type="checkbox" asp-for="HasDescription" class="form-check-input"/>
+        <label asp-for="HasDescription" class="form-check-label">Has description</label>
+        
+        <input type="checkbox" asp-for="HasCover" class="form-check-input"/>
+        <label asp-for="HasCover" class="form-check-label">Has cover</label>
+    </div>
+
+    <div class="form-group mt-2">
+        <input type="submit" class="btn btn-primary" value="Search"/>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">Title</th>
+        <th scope="col">Authors</th>
+        <th scope="col">Description</th>
+        <th scope="col">OpenBook ID</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var book in Model.Books)
+    {
+        <tr>
+            <td>
+                @if (book.CoverId != null)
+                {
+                    <img src="https://covers.openlibrary.org/b/id/@book.CoverId-M.jpg" alt="@book.Title"/>
+                }
+                else
+                {
+                    <img src="img/cover.jpg" width="180" height="271" alt="@book.Title"/>
+                }
+            </td>
+            <th>@book.Title</th>
+            <td>@book.Authors</td>
+            <td>@book.Description</td>
+            <td>@book.Id</td>
+        </tr>
+    }
+    </tbody>
+</table>
