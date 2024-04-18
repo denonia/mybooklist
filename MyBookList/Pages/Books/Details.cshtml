@@ -1,0 +1,27 @@
+﻿@page
+@model MyBookList.Pages.Books.Details
+
+@{
+}
+
+
+<div class="row">
+    <div class="col-12 col-md-4 col-xl-2">
+        <img src="@Model.Book.ThumbnailUrl" alt="@Model.Book.Title"/>
+    </div>
+    <div class="col-12 col-md-8 col-xl-4">
+
+        <h1 class="display-4">@Model.Book.Title</h1>
+        <h5>By @Model.Book.AuthorsString</h5>
+
+        <p class="mt-4">
+            <strong>Subjects:</strong> @(string.Join(", ", Model.Book.Subjects))
+        </p>
+        <p>
+            <strong>Description:</strong> @Model.Book.Description
+        </p>
+    </div>
+    <div class="col-xl-6">
+        <h1>Ratings</h1>
+    </div>
+</div>
