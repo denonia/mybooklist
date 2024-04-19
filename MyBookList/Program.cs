@@ -23,6 +23,10 @@ public class Program
                 options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
                 options.SignIn.RequireConfirmedAccount = false;
+
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddRazorPages();
