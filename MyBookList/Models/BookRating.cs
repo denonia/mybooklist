@@ -9,6 +9,7 @@ public class BookRating
     public string BookId { get; set; }
     public int Rating { get; set; }
     public ReadingStatus Status { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public ApplicationUser User { get; set; }
     public Book Book { get; set; }

@@ -1,27 +1,120 @@
 ﻿@page
+@using Humanizer
+@using MyBookList.Enums
 @model MyBookList.Pages.Books.Details
 
 @{
+    ViewData["Title"] = Model.Book.Title;
 }
 
-
 <div class="row">
-    <div class="col-12 col-md-4 col-xl-2">
-        <img src="@Model.Book.ThumbnailUrl" alt="@Model.Book.Title"/>
-    </div>
-    <div class="col-12 col-md-8 col-xl-4">
+    <div class="col-xl-6">
+        <div class="row">
+            <div class="col-xl-4">
+                <img src="@Model.Book.ThumbnailUrl" alt="@Model.Book.Title"/>
+            </div>
+            <div class="col-xl-8">
+                <h1 class="display-4">@Model.Book.Title</h1>
+                <h5>By @Model.Book.AuthorsString</h5>
 
-        <h1 class="display-4">@Model.Book.Title</h1>
-        <h5>By @Model.Book.AuthorsString</h5>
+                <p class="mt-4">
+                    <strong>Subjects:</strong> @(string.Join(", ", Model.Book.Subjects))
+                </p>
+                <p>
+                    <strong>Description:</strong> @Model.Book.Description
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container mt-3 text-dark">
+                <h1>Comments</h1>
+                <div class="row d-flex">
+                    <div class="col-xl-10">
+                        <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Book.Id">
+                            <div class="form-group">
+                                <textarea asp-for="CommentModel.Body" class="form-control" placeholder="Enter your comment here..."></textarea>
+                                <span asp-validation-for="CommentModel.Body" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mt-2">
+                                <input type="submit" class="btn btn-primary" value="Post"/>
+                            </div>
+                        </form>
 
-        <p class="mt-4">
-            <strong>Subjects:</strong> @(string.Join(", ", Model.Book.Subjects))
-        </p>
-        <p>
-            <strong>Description:</strong> @Model.Book.Description
-        </p>
+                        @foreach (var comment in Model.Book.Comments)
+                        {
+                            <div class="d-flex flex-start py-3">
+                                <img class="rounded-circle shadow-1-strong me-3"
+                                     src="/img/user.jpg" alt="avatar" width="65"
+                                     height="65"/>
+                                <div class="card w-100">
+                                    <div class="card-body p-4">
+                                        <h5>@comment.Username</h5>
+                                        <p class="small">@comment.CreatedAt.Humanize(false)</p>
+                                        <p>
+                                            @comment.Body
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-xl-6">
         <h1>Ratings</h1>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="col-xl-8">
+                <h5>Your rating</h5>
+                <form method="post" asp-page-handler="Rating" asp-route-id="@Model.Book.Id">
+                    <div class="row">
+                        <div class="form-group col">
+                            <label asp-for="RatingModel.Status">Status</label>
+                            <select asp-for="RatingModel.Status" class="form-select">
+                                <option selected>Select book status...</option>
+                                <option value="@ReadingStatus.Wishlist">In Wishlist</option>
+                                <option value="@ReadingStatus.Reading">Reading</option>
+                                <option value="@ReadingStatus.Finished">Finished</option>
+                                <option value="@ReadingStatus.Dropped">Dropped</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label asp-for="RatingModel.Rating">Your rating</label>
+                            <select asp-for="RatingModel.Rating" class="form-select">
+                                <option selected>Rate this book...</option>
+                                <option value="10">10 - Masterpiece</option>
+                                <option value="9">9 - Great</option>
+                                <option value="8">8 - Very Good</option>
+                                <option value="7">7 - Good</option>
+                                <option value="6">6 - Fine</option>
+                                <option value="5">5 - Average</option>
+                                <option value="4">4 - Bad</option>
+                                <option value="3">3 - Very Bad</option>
+                                <option value="2">2 - Horrible</option>
+                                <option value="1">1 - Appalling</option>
+                                <option value="0">0 - Disaster</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <input type="submit" class="btn btn-primary" value="Submit"/>
+                    </div>
+                </form>
+            </div>
+        }
+
+        <h5 class="mt-4">Latest ratings</h5>
+
+        <ul class="list-group mt-2">
+            @foreach (var rating in Model.Book.LatestRatings)
+            {
+                <li class="list-group-item py-3">
+                    <strong>@rating.Username</strong> rated <strong>@rating.Rating/10</strong> @rating.CreatedAt.Humanize(false)
+                </li>
+            }
+        </ul>
     </div>
 </div>
