@@ -9,4 +9,6 @@ public class Book
     
     public IEnumerable<Author> Authors { get; set; }
     public IEnumerable<Subject> Subjects { get; set; }
+    public IEnumerable<BookRating> Ratings { get; set; }
+    public IEnumerable<BookComment> Comments { get; set; }
 }
