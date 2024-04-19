@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MyBookList.Data;
@@ -38,6 +39,7 @@ public class Index : PageModel
     [BindProperty(SupportsGet = true)] public bool HasDescription { get; set; } = true;
     [BindProperty(SupportsGet = true)] public bool HasCover { get; set; } = true;
     [BindProperty(SupportsGet = true)] public string? SearchString { get; set; }
+    [BindProperty(SupportsGet = true)] public string? Author { get; set; }
     [BindProperty(SupportsGet = true)] public string? Subject { get; set; }
     public int PageIndex { get; set; } = 1;
 
@@ -50,6 +52,12 @@ public class Index : PageModel
 
         if (!string.IsNullOrEmpty(SearchString))
             books = books.Where(x => x.Title.StartsWith(SearchString));
+        
+        if (!string.IsNullOrEmpty(Author))
+        {
+            var authors = _dbContext.Authors.Where(x => x.Name == Author);
+            books = books.Where(x => x.Authors.Intersect(authors).Any());
+        }
         
         if (!string.IsNullOrEmpty(Subject))
         {
@@ -67,8 +75,8 @@ public class Index : PageModel
             .Select(x => new BookViewModel
             {
                 Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
+                Title = x.Title.Truncate(100),
+                Description = x.Description.Truncate(200),
                 CoverId = x.CoverId,
                 AuthorNames = x.Authors.Select(a => a.Name),
             })

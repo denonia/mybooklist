@@ -1,0 +1,72 @@
+﻿@page
+@model MyBookList.Pages.Authors.Index
+
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<h1 class="display-4">Authors</h1>
+
+<strong>@Model.AuthorsCount@(Model.AuthorsCount == Model.PageSize ? "+" : "")</strong> results found
+
+<form>
+    <div class="form-group mt-3 col-sm-4">
+        <label asp-for="SearchString">Title</label>
+        <input type="text" asp-for="SearchString" class="form-control" placeholder="Enter the author's name..."/>
+    </div>
+
+    <div class="form-group mt-2">
+        <input type="submit" class="btn btn-primary" value="Search"/>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Personal name</th>
+        <th scope="col">Birth year</th>
+        <th scope="col">Death year</th>
+        <th scope="col">OpenBook ID</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var author in Model.Authors)
+    {
+        <tr>
+            <th>
+                <a asp-page="/Books/Index"
+                   asp-route-Author="@author.Name"
+                   asp-route-HasDescription="false"
+                   asp-route-HasCover="false">
+                    @author.Name
+                </a>
+            </th>
+            <td>@author.PersonalName</td>
+            <td>@author.BirthYear</td>
+            <td>@author.DeathYear</td>
+            <td>@author.Id</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (Model.PageIndex > 1)
+{
+    <a class="btn btn-primary"
+       asp-page="Index"
+       asp-route-SearchString="@Model.SearchString"
+       asp-route-pageIndex="@(Model.PageIndex - 1)">
+        Previous page
+    </a>
+}
+
+@if (Model.AuthorsCount == Model.PageSize)
+{
+    <a class="btn btn-primary"
+       asp-page="Index"
+       asp-route-SearchString="@Model.SearchString"
+       asp-route-pageIndex="@(Model.PageIndex + 1)">
+        Next page
+    </a>
+}
