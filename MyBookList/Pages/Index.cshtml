@@ -1,9 +1,50 @@
 ﻿@page
+@using Humanizer
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Hello there</h1>
+<div class="text-center mb-4">
+    <h1 class="display-5">Welcome to MyBookList!</h1>
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+
+    </div>
+    <div class="col-xl-6">
+        <div class="text-end">
+            <blockquote class="blockquote">
+                <p class="mb-3">I love <strong>MyBookList.</strong> It's my go-to website whenever I need to find something interesting to read!</p>
+                <footer class="blockquote-footer">Said nobody ever</footer>
+            </blockquote>
+
+            <blockquote class="blockquote">
+                <p class="mb-3">It doesn't even collect your personal data, so why not give it a try!</p>
+                <footer class="blockquote-footer">Who cares</footer>
+            </blockquote>
+        </div>
+    </div>
+</div>
+
+<h3>Random books you could like</h3>
+
+<div class="row">
+    @foreach (var book in Model.RandomBooks)
+    {
+        <div class="card col-3">
+            <div class="text-center pb-2">
+                <img src="@book.ThumbnailUrl" alt="@book.Title" width="180" height="248">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a asp-page="/Books/Details" asp-route-id="@book.Id">
+                        @book.Title.Truncate(100)
+                    </a>
+                </h5>
+                <p class="card-text">@book.Description.Truncate(300)</p>
+            </div>
+        </div>
+    }
 </div>

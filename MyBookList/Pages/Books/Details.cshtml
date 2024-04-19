@@ -15,10 +15,20 @@
             </div>
             <div class="col-xl-8">
                 <h1 class="display-4">@Model.Book.Title</h1>
-                <h5>By @Model.Book.AuthorsString</h5>
+                <h5>
+                    By
+                    @foreach (var author in Model.Book.AuthorNames)
+                    {
+                        <a asp-page="/Books/Index" asp-route-Author="@author">@author@(author != Model.Book.AuthorNames.Last() ? "," : "")</a>
+                    }
+                </h5>
 
                 <p class="mt-4">
-                    <strong>Subjects:</strong> @(string.Join(", ", Model.Book.Subjects))
+                    <strong>Subjects:</strong>
+                    @foreach (var subject in Model.Book.Subjects)
+                    {
+                        <a asp-page="/Books/Index" asp-route-Subject="@subject">@subject@(subject != Model.Book.Subjects.Last() ? "," : "")</a>
+                    }
                 </p>
                 <p>
                     <strong>Description:</strong> @Model.Book.Description
@@ -67,11 +77,11 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="col-xl-8">
+            <div class="col-xl-6">
                 <h5>Your rating</h5>
-                <form method="post" asp-page-handler="Rating" asp-route-id="@Model.Book.Id">
-                    <div class="row">
-                        <div class="form-group col">
+                <div class="p-2">
+                    <form method="post" asp-page-handler="Rating" asp-route-id="@Model.Book.Id">
+                        <div class="form-group">
                             <label asp-for="RatingModel.Status">Status</label>
                             <select asp-for="RatingModel.Status" class="form-select">
                                 <option selected>Select book status...</option>
@@ -81,7 +91,7 @@
                                 <option value="@ReadingStatus.Dropped">Dropped</option>
                             </select>
                         </div>
-                        <div class="form-group col">
+                        <div class="form-group">
                             <label asp-for="RatingModel.Rating">Your rating</label>
                             <select asp-for="RatingModel.Rating" class="form-select">
                                 <option selected>Rate this book...</option>
@@ -98,11 +108,11 @@
                                 <option value="0">0 - Disaster</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group mt-2">
-                        <input type="submit" class="btn btn-primary" value="Submit"/>
-                    </div>
-                </form>
+                        <div class="form-group mt-2">
+                            <input type="submit" class="btn btn-primary" value="Submit"/>
+                        </div>
+                    </form>
+                </div>
             </div>
         }
 
@@ -112,7 +122,14 @@
             @foreach (var rating in Model.Book.LatestRatings)
             {
                 <li class="list-group-item py-3">
-                    <strong>@rating.Username</strong> rated <strong>@rating.Rating/10</strong> @rating.CreatedAt.Humanize(false)
+                    <div class="row">
+                        <div class="col-8">
+                            <strong>@rating.Username</strong> rated <strong>@rating.Rating/10</strong>
+                        </div>
+                        <div class="col text-end">
+                            @rating.CreatedAt.Humanize(false)
+                        </div>
+                    </div>
                 </li>
             }
         </ul>

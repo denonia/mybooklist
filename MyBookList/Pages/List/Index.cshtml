@@ -1,0 +1,32 @@
+﻿@page
+@using Humanizer
+@model MyBookList.Pages.List.Index
+
+@{
+}
+
+<h1 class="display-4">@User.Identity.Name's Book List</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Status</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Added</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var rating in Model.Ratings)
+    {
+        <tr>
+            <th>
+                <a asp-page="/Books/Details" asp-route-id="@rating.BookId">@rating.BookTitle</a>
+            </th>
+            <td>@rating.Status</td>
+            <td>@rating.Rating/10</td>
+            <td>@rating.CreatedAt.Humanize(false)</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -36,8 +36,6 @@ public class BookDetailsViewModel
     public IEnumerable<string> Subjects { get; init; }
     public IEnumerable<CommentViewModel> Comments { get; init; }
     public IEnumerable<RatingViewModel> LatestRatings { get; init; }
-
-    public string AuthorsString => string.Join(",", AuthorNames);
 }
 
 public class CommentModel
