@@ -38,6 +38,7 @@ public class Index : PageModel
     [BindProperty(SupportsGet = true)] public bool HasDescription { get; set; } = true;
     [BindProperty(SupportsGet = true)] public bool HasCover { get; set; } = true;
     [BindProperty(SupportsGet = true)] public string? SearchString { get; set; }
+    [BindProperty(SupportsGet = true)] public string? Subject { get; set; }
     public int PageIndex { get; set; } = 1;
 
     public async Task OnGetAsync(int pageIndex = 1)
@@ -49,6 +50,12 @@ public class Index : PageModel
 
         if (!string.IsNullOrEmpty(SearchString))
             books = books.Where(x => x.Title.StartsWith(SearchString));
+        
+        if (!string.IsNullOrEmpty(Subject))
+        {
+            var subject = _dbContext.Subjects.FirstOrDefault(x => x.Title == Subject);
+            books = books.Where(x => x.Subjects.Contains(subject));
+        }
 
         if (HasDescription)
             books = books.Where(x => x.Description != null);
