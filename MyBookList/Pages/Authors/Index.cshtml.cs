@@ -25,7 +25,7 @@ public class Index : PageModel
     }
 
     public int PageSize { get; } = 20;
-    
+
     public IEnumerable<AuthorViewModel> Authors { get; set; } = default!;
 
     public int AuthorsCount => Authors.Count();
@@ -42,7 +42,9 @@ public class Index : PageModel
 
         if (!string.IsNullOrEmpty(SearchString))
             authors = authors.Where(x => x.Name.StartsWith(SearchString));
-        
+        else
+            authors = authors.Where(x => x.BirthYear != null & x.DeathYear != null);
+
         Authors = await authors.Skip((PageIndex - 1) * PageSize).Take(PageSize)
             .Select(x => new AuthorViewModel
             {
