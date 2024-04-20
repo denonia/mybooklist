@@ -7,8 +7,8 @@
     ViewData["Title"] = Model.Book.Title;
 }
 
-<div class="row">
-    <div class="col-xl-6">
+<div class="row justify-content-center">
+    <div class="col-xl-7">
         <div class="row">
             <div class="col-xl-4">
                 <img src="@Model.Book.ThumbnailUrl" alt="@Model.Book.Title"/>
@@ -40,15 +40,22 @@
                 <h1>Comments</h1>
                 <div class="row d-flex">
                     <div class="col-xl-10">
-                        <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Book.Id">
-                            <div class="form-group">
-                                <textarea asp-for="CommentModel.Body" class="form-control" placeholder="Enter your comment here..."></textarea>
-                                <span asp-validation-for="CommentModel.Body" class="text-danger"></span>
-                            </div>
-                            <div class="form-group mt-2">
-                                <input type="submit" class="btn btn-primary" value="Post"/>
-                            </div>
-                        </form>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Book.Id">
+                                <div class="form-group">
+                                    <textarea asp-for="CommentModel.Body" class="form-control" placeholder="Enter your comment here..."></textarea>
+                                    <span asp-validation-for="CommentModel.Body" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <input type="submit" class="btn btn-primary" value="Post"/>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <p>You must <strong>log in</strong> to leave comments.</p>
+                        }
 
                         @foreach (var comment in Model.Book.Comments)
                         {
@@ -58,7 +65,24 @@
                                      height="65"/>
                                 <div class="card w-100">
                                     <div class="card-body p-4">
-                                        <h5>@comment.Username</h5>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5>@comment.Username</h5>
+                                            </div>
+                                            @if (User.Identity.IsAuthenticated && comment.Username == User.Identity.Name)
+                                            {
+                                                <div class="col text-end">
+                                                    <form method="post" asp-page-handler="DeleteComment"
+                                                          asp-route-id="@Model.Book.Id"
+                                                          asp-route-commentId="@comment.Id">
+                                                        <button type="submit"
+                                                                class="btn btn-danger">
+                                                            Remove
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            }
+                                        </div>
                                         <p class="small">@comment.CreatedAt.Humanize(false)</p>
                                         <p>
                                             @comment.Body
@@ -72,47 +96,51 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-6">
+    <div class="col-xl-4">
         <h1>Ratings</h1>
 
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="col-xl-6">
+            <div>
                 <h5>Your rating</h5>
-                <div class="p-2">
-                    <form method="post" asp-page-handler="Rating" asp-route-id="@Model.Book.Id">
-                        <div class="form-group">
-                            <label asp-for="RatingModel.Status">Status</label>
-                            <select asp-for="RatingModel.Status" class="form-select">
-                                <option selected>Select book status...</option>
-                                <option value="@ReadingStatus.Wishlist">In Wishlist</option>
-                                <option value="@ReadingStatus.Reading">Reading</option>
-                                <option value="@ReadingStatus.Finished">Finished</option>
-                                <option value="@ReadingStatus.Dropped">Dropped</option>
-                            </select>
+                <form method="post" asp-page-handler="Rating" asp-route-id="@Model.Book.Id">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="RatingModel.Status">Status</label>
+                                <select asp-for="RatingModel.Status" class="form-select">
+                                    <option selected>Select book status...</option>
+                                    <option value="@ReadingStatus.Wishlist">In Wishlist</option>
+                                    <option value="@ReadingStatus.Reading">Reading</option>
+                                    <option value="@ReadingStatus.Finished">Finished</option>
+                                    <option value="@ReadingStatus.Dropped">Dropped</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="RatingModel.Rating">Your rating</label>
-                            <select asp-for="RatingModel.Rating" class="form-select">
-                                <option selected>Rate this book...</option>
-                                <option value="10">10 - Masterpiece</option>
-                                <option value="9">9 - Great</option>
-                                <option value="8">8 - Very Good</option>
-                                <option value="7">7 - Good</option>
-                                <option value="6">6 - Fine</option>
-                                <option value="5">5 - Average</option>
-                                <option value="4">4 - Bad</option>
-                                <option value="3">3 - Very Bad</option>
-                                <option value="2">2 - Horrible</option>
-                                <option value="1">1 - Appalling</option>
-                                <option value="0">0 - Disaster</option>
-                            </select>
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="RatingModel.Rating">Your rating</label>
+                                <select asp-for="RatingModel.Rating" class="form-select">
+                                    <option selected>Rate this book...</option>
+                                    <option value="10">10 - Masterpiece</option>
+                                    <option value="9">9 - Great</option>
+                                    <option value="8">8 - Very Good</option>
+                                    <option value="7">7 - Good</option>
+                                    <option value="6">6 - Fine</option>
+                                    <option value="5">5 - Average</option>
+                                    <option value="4">4 - Bad</option>
+                                    <option value="3">3 - Very Bad</option>
+                                    <option value="2">2 - Horrible</option>
+                                    <option value="1">1 - Appalling</option>
+                                    <option value="0">0 - Disaster</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group mt-2">
-                            <input type="submit" class="btn btn-primary" value="Submit"/>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <input type="submit" class="btn btn-primary" value="Submit"/>
+                    </div>
+                </form>
             </div>
         }
 

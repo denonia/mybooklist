@@ -11,6 +11,50 @@
 
 <div class="row">
     <div class="col-xl-6">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#ratings-tab-pane" type="button" role="tab" aria-controls="ratings-tab-pane" aria-selected="true">Latest ratings</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-tab-pane" type="button" role="tab" aria-controls="comments-tab-pane" aria-selected="false">Latest comments</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="ratings-tab-pane" role="tabpanel" aria-labelledby="ratings-tab" tabindex="0">
+                <ul class="list-group mt-2">
+                    @foreach (var rating in Model.LatestRatings)
+                    {
+                        <li class="list-group-item py-3">
+                            <div class="row">
+                                <div class="col-8">
+                        <strong>@rating.Username</strong> rated <strong>@rating.Rating/10</strong> on <a asp-page="/Books/Details" asp-route-Id="@rating.BookId">@rating.BookTitle</a>
+                                </div>
+                                <div class="col text-end">
+                                    @rating.CreatedAt.Humanize(false)
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
+                <ul class="list-group mt-2">
+                    @foreach (var comment in Model.LatestComments)
+                    {
+                    <li class="list-group-item py-3">
+                        <div class="row">
+                            <div class="col-8">
+                                <strong>@comment.Username</strong> on <a asp-page="/Books/Details" asp-route-Id="@comment.BookId">@comment.BookTitle</a>: @comment.Body.Truncate(200)
+                            </div>
+                            <div class="col text-end">
+                                @comment.CreatedAt.Humanize(false)
+                            </div>
+                        </div>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
 
     </div>
     <div class="col-xl-6">
@@ -28,23 +72,26 @@
     </div>
 </div>
 
-<h3>Random books you could like</h3>
+<div class="py-4">
+    <h3>Random books you could like</h3>
 
-<div class="row">
-    @foreach (var book in Model.RandomBooks)
-    {
-        <div class="card col-3">
-            <div class="text-center pb-2">
-                <img src="@book.ThumbnailUrl" alt="@book.Title" width="180" height="248">
+    <div class="row">
+        @foreach (var book in Model.RandomBooks)
+        {
+            <div class="card col-3">
+                <div class="text-center pb-2">
+                    <img src="@book.ThumbnailUrl" alt="@book.Title" width="180" height="248">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a asp-page="/Books/Details" asp-route-id="@book.Id">
+                            @book.Title.Truncate(100)
+                        </a>
+                    </h5>
+                    <p class="card-text">@book.Description.Truncate(300)</p>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">
-                    <a asp-page="/Books/Details" asp-route-id="@book.Id">
-                        @book.Title.Truncate(100)
-                    </a>
-                </h5>
-                <p class="card-text">@book.Description.Truncate(300)</p>
-            </div>
-        </div>
-    }
+        }
+    </div>
+
 </div>

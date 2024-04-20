@@ -12,6 +12,7 @@ namespace MyBookList.Pages.Books;
 
 public class CommentViewModel
 {
+    public Guid Id { get; set; }
     public string Username { get; set; }
     public string Body { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -89,6 +90,7 @@ public class Details : PageModel
                     .OrderByDescending(c => c.CreatedAt)
                     .Select(c => new CommentViewModel
                     {
+                        Id = c.Id,
                         Username = c.User.UserName!,
                         Body = c.Body,
                         CreatedAt = c.CreatedAt
@@ -152,6 +154,26 @@ public class Details : PageModel
                 Body = commentModel.Body
             };
             _dbContext.BookComments.Add(comment);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostDeleteCommentAsync(string id, Guid commentId)
+    {
+        if (!ModelState.IsValid)
+        {
+            await OnGetAsync(id);
+            return Page();
+        }
+
+        var userId = _userManager.GetUserId(User);
+
+        var comment = await _dbContext.BookComments.FindAsync(commentId);
+        if (comment != null && comment.UserId == userId)
+        {
+            _dbContext.BookComments.Remove(comment);
             await _dbContext.SaveChangesAsync();
         }
 
