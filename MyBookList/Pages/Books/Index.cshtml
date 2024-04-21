@@ -1,5 +1,5 @@
 ﻿@page
-@model MyBookList.Pages.Books.Index
+@model Index
 
 @{
     ViewData["Title"] = "Books";
@@ -80,7 +80,7 @@
     </a>
 }
 
-@if (Model.BooksCount == @Model.PageSize)
+@if (Model.BooksCount == Model.PageSize)
 {
     <a class="btn btn-primary"
        asp-page="Index"

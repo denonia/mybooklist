@@ -27,7 +27,7 @@
                         <li class="list-group-item py-3">
                             <div class="row">
                                 <div class="col-8">
-                        <strong>@rating.Username</strong> rated <strong>@rating.Rating/10</strong> on <a asp-page="/Books/Details" asp-route-Id="@rating.BookId">@rating.BookTitle</a>
+                                    <strong>@rating.Username</strong> rated <strong>@rating.Rating/10</strong> on <a asp-page="/Books/Details" asp-route-Id="@rating.BookId">@rating.BookTitle</a>
                                 </div>
                                 <div class="col text-end">
                                     @rating.CreatedAt.Humanize(false)
@@ -41,16 +41,16 @@
                 <ul class="list-group mt-2">
                     @foreach (var comment in Model.LatestComments)
                     {
-                    <li class="list-group-item py-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <strong>@comment.Username</strong> on <a asp-page="/Books/Details" asp-route-Id="@comment.BookId">@comment.BookTitle</a>: @comment.Body.Truncate(200)
+                        <li class="list-group-item py-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>@comment.Username</strong> on <a asp-page="/Books/Details" asp-route-Id="@comment.BookId">@comment.BookTitle</a>: @comment.Body.Truncate(200)
+                                </div>
+                                <div class="col text-end">
+                                    @comment.CreatedAt.Humanize(false)
+                                </div>
                             </div>
-                            <div class="col text-end">
-                                @comment.CreatedAt.Humanize(false)
-                            </div>
-                        </div>
-                    </li>
+                        </li>
                     }
                 </ul>
             </div>
