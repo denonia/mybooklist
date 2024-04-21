@@ -14,17 +14,22 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\thumb\" />
+        <Folder Include="wwwroot\thumb\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\MyBookList.Core\MyBookList.Core.csproj"/>
+        <ProjectReference Include="..\MyBookList.Infrastructure\MyBookList.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

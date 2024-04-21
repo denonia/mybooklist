@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MyBookList.Data;
-using MyBookList.Models;
+using MyBookList.Core.Entities;
+using MyBookList.Core.Interfaces;
+using MyBookList.Infrastructure.Data;
+using MyBookList.Infrastructure.Services;
 using MyBookList.Services;
 
 namespace MyBookList;
@@ -31,8 +32,13 @@ public class Program
             })
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddRazorPages();
-
-        builder.Services.AddTransient<ThumbnailService, ThumbnailService>();
+        
+        builder.Services.AddTransient<ICommentService, CommentService>();
+        builder.Services.AddTransient<IThumbnailService, ThumbnailService>();
+        builder.Services.AddTransient<IBookService, BookService>();
+        builder.Services.AddTransient<IRatingService, RatingService>();
+        builder.Services.AddTransient<IAuthorService, AuthorService>();
+        builder.Services.AddTransient<ISubjectService, SubjectService>();
 
         builder.Logging.AddConsole(config => config.TimestampFormat = "[dd/MM/yy HH:mm:ss:fff] ");
 
@@ -41,11 +47,13 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            var logger = services.GetRequiredService<ILogger<Program>>();
+            var logger = services.GetRequiredService<ILogger<OpenLibrarySeeder>>();
             try
             {
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 var configuration = services.GetRequiredService<IConfiguration>();
+
+                context.Database.EnsureCreated();
                 OpenLibrarySeeder.Seed(context, configuration, logger);
             }
             catch (Exception ex)
@@ -66,7 +74,6 @@ public class Program
             app.UseHsts();
         }
 
-        app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();

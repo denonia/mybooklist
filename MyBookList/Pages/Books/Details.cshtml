@@ -1,7 +1,8 @@
 ﻿@page
 @using Humanizer
-@using MyBookList.Enums
-@model MyBookList.Pages.Books.Details
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using MyBookList.Core.Enums
+@model Details
 
 @{
     ViewData["Title"] = Model.Book.Title;
@@ -44,8 +45,8 @@
                         {
                             <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Book.Id">
                                 <div class="form-group">
-                                    <textarea asp-for="CommentModel.Body" class="form-control" placeholder="Enter your comment here..."></textarea>
-                                    <span asp-validation-for="CommentModel.Body" class="text-danger"></span>
+                                    <textarea asp-for="Comment.Body" class="form-control" placeholder="Enter your comment here..."></textarea>
+                                    <span asp-validation-for="Comment.Body" class="text-danger"></span>
                                 </div>
                                 <div class="form-group mt-2">
                                     <input type="submit" class="btn btn-primary" value="Post"/>
@@ -107,8 +108,8 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label asp-for="RatingModel.Status">Status</label>
-                                <select asp-for="RatingModel.Status" class="form-select">
+                                <label asp-for="Rating.Status">Status</label>
+                                <select asp-for="Rating.Status" class="form-select">
                                     <option selected>Select book status...</option>
                                     <option value="@ReadingStatus.Wishlist">In Wishlist</option>
                                     <option value="@ReadingStatus.Reading">Reading</option>
@@ -119,8 +120,8 @@
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label asp-for="RatingModel.Rating">Your rating</label>
-                                <select asp-for="RatingModel.Rating" class="form-select">
+                                <label asp-for="Rating.Rating">Your rating</label>
+                                <select asp-for="Rating.Rating" class="form-select">
                                     <option selected>Rate this book...</option>
                                     <option value="10">10 - Masterpiece</option>
                                     <option value="9">9 - Great</option>

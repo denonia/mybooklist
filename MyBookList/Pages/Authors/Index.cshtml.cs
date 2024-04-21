@@ -1,32 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using MyBookList.Data;
-using MyBookList.Services;
+using MyBookList.Core.Interfaces;
+using MyBookList.Core.Responses;
 
 namespace MyBookList.Pages.Authors;
 
-public class AuthorViewModel
-{
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string? PersonalName { get; set; }
-    public int? BirthYear { get; set; }
-    public int? DeathYear { get; set; }
-}
-
 public class Index : PageModel
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IAuthorService _authorService;
 
-    public Index(ApplicationDbContext dbContext)
+    public Index(IAuthorService authorService)
     {
-        _dbContext = dbContext;
+        _authorService = authorService;
     }
 
     public int PageSize { get; } = 20;
 
-    public IEnumerable<AuthorViewModel> Authors { get; set; } = default!;
+    public IEnumerable<AuthorResponse> Authors { get; set; } = default!;
 
     public int AuthorsCount => Authors.Count();
 
@@ -38,22 +28,6 @@ public class Index : PageModel
         if (pageIndex >= 1)
             PageIndex = pageIndex;
 
-        var authors = _dbContext.Authors.AsQueryable();
-
-        if (!string.IsNullOrEmpty(SearchString))
-            authors = authors.Where(x => x.Name.StartsWith(SearchString));
-        else
-            authors = authors.Where(x => x.BirthYear != null & x.DeathYear != null);
-
-        Authors = await authors.Skip((PageIndex - 1) * PageSize).Take(PageSize)
-            .Select(x => new AuthorViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                PersonalName = x.PersonalName,
-                BirthYear = x.BirthYear,
-                DeathYear = x.DeathYear
-            })
-            .ToListAsync();
+        Authors = await _authorService.SearchAuthorsAsync(PageIndex, PageSize, SearchString);
     }
 }
