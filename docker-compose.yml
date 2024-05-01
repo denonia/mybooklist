@@ -1,6 +1,34 @@
 ﻿services:
   mybooklist:
     image: mybooklist
+    container_name: mybooklist
     build:
       context: .
       dockerfile: MyBookList/Dockerfile
+    restart: always
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql-server;database=MyBookList;User Id=sa;Password=password123!;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Release
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "5001:443"
+      - "5000:80"
+    volumes:
+      - ./dumps:/dumps
+    depends_on:
+      - mssql
+
+  mssql:
+    container_name: sql-server
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "password123!"
+    ports:
+      - "5431:1433"
+    volumes:
+      - mbl-volume:/var/opt/mssql
+
+volumes:
+  mbl-volume:
